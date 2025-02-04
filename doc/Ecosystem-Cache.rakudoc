@@ -1,0 +1,45 @@
+=begin pod
+
+=head1 NAME
+
+Ecosystem::Cache - maintain a local cache of an ecosystem
+
+=head1 SYNOPSIS
+
+=begin code :lang<raku>
+
+use Ecosystem::Cache;
+
+my $cache = Ecosystem::Cache.new;  # defaults to REA
+
+$cache.update;  # make sure all distributions are up-to-date
+
+=end code
+
+=head1 DESCRIPTION
+
+The C<Ecosystem::Cache> distribution provides the logic to maintain
+a local cache of the most recent distributions in a Raku ecosystem.
+
+It's use is mainly intended to serve as an area in which searches
+can be performed, such as with L<C<App::Rak>|https://raku.land/zef:lizmat/App::Rak>.
+
+=head1 METHODS
+
+=head2 new
+
+=head2 update
+
+=head1 AUTHOR
+
+Elizabeth Mattijsen <liz@raku.rocks>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2025 Elizabeth Mattijsen
+
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+
+=end pod
+
+# vim: expandtab shiftwidth=4
