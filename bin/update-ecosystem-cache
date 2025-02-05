@@ -1,0 +1,29 @@
+use Ecosystem::Cache;
+
+my $ecosystem := Ecosystem.new(:ecosystem(@*ARGS.head // "rea"));
+my $cache     := Ecosystem::Cache.new(:$ecosystem);
+$cache.update(my @added, my @removed, my %failed);
+
+if @added {
+    say "@added.elems() added:";
+    say "  $_" for @added;
+}
+if @removed {
+    say "@removed.elems() removed:";
+    say "  $_" for @removed;
+}
+
+# Only show failed if there were any changes
+if (@added || @removed) && %failed {
+    my %errors;
+    %errors{.value.lines.head}.push(.key ~ "\n" ~ .value.lines.tail)
+      for %failed;
+
+    say "%failed.elems() failed:";
+    for %errors {
+        say " " ~ .key ~ ":";
+        say .indent(2) for .value<>;
+    }
+}
+
+# vim: expandtab shiftwidth=4

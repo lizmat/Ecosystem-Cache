@@ -1,6 +1,9 @@
 use Test;
+
 use Ecosystem::Cache;
 
-pass "replace me";
+plan 1;
 
-done-testing;
+isa-ok Ecosystem::Cache.new, Ecosystem::Cache;
+
+# vim: expandtab shiftwidth=4

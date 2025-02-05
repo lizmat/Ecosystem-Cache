@@ -24,11 +24,131 @@ a local cache of the most recent distributions in a Raku ecosystem.
 It's use is mainly intended to serve as an area in which searches
 can be performed, such as with L<C<App::Rak>|https://raku.land/zef:lizmat/App::Rak>.
 
-=head1 METHODS
+=head1 SCRIPTS
+
+=begin output
+$ update-ecosystem-cache
+=end output
+
+The C<update-ecosystem-cache> script will update the C<REA> cache
+and output any statistics when appropriate.
+
+=head1 MAIN METHODS
 
 =head2 new
 
+=begin code :lang<raku>
+
+use Ecosystem::Cache;
+
+my $cache = Ecosystem::Cache.new(:update);  # defaults to REA
+
+=end code
+
+The C<new> method instantiates the C<Ecosystem::Cache> object, and
+optionally refreshes the information about the ecosystem (instead of
+using the information already cached by C<zef>).  It takes the following
+named arguments:
+
+=head3 :ecosystem
+
+Optional.  The L<C<Ecosystem>|https://raku.land/zef:lizmat/Ecosystem>
+object for which to set up / update a cache.  Defaults to whatever
+ecosystem in instantiated with C<Ecosystem.new>.
+
+After instantion, the C<Ecosystem> object used can be obtained by the
+C<ecosystem> method.
+
+=head3 :cache
+
+Optional.  An C<IO::Path> indicating the directory where distribution
+files should be stored.  From there, a directory will be added with the
+ecosystem name.
+
+Defaults to what is either specified by:
+=item the C<RAKU_ECOSYSTEM_CACHE> environment variable
+=item the subdirectory C<.ecosystem/cache> in C<$*HOME>
+=item the subdirectory C<.ecosystem/cache> in C<$*TMPDIR>
+
+In the most common case, this will default to C<~/.ecosystem/cache>.
+
+After instantion, the C<IO::Path> used can be obtained by the C<cache>
+method.
+
+=head3 :update
+
+Optional.  If specified with a true value, will call the C<.update>
+method on the underlying C<Ecosystem> object, causing the meta list
+of the ecosystem to be fetched from the Internet (rather than using
+the meta list cached by C<zef>).
+
 =head2 update
+
+=begin code :lang<raku>
+
+$cache.update(my @new, my @gone, my %erred);
+say "Added @new.elems(), removed @gone.elems(), failed %erred.elems()";
+
+=end code
+
+The C<update> method updates the cache with the latest distributions
+of that ecosystem.  If this is the first call to this method for a given
+cache, it may take quite some time before it is done (at the moment of
+this writing more than 2200 distributions, totalling to 1.1 GB will
+be downloaded and handled then).  Any calls later will only update
+new distributions and remove any distributions that are no longer the
+latest.
+
+The C<update> method takes 3 optional positional arguments:
+=item an array for storing the identities that were added
+=item an array for storing the identities that were removed
+=item a hash for storing the identities that had a failure message, keyed to the identity
+
+=head1 HELPER METHODS
+
+=head2 name
+
+=begin code :lang<raku>
+
+say $cache.name;
+
+=end code
+
+Returns the name of the ecosystem to which this cache applies.
+
+=head2 archive-URL
+
+=begin code :lang<raku>
+
+say $cache.archive-URL($identity);
+
+=end code
+
+Returns the URL for downloading the distribution of the given identity.
+
+=head2 cache-IO
+
+=begin code :lang<raku>
+
+say $cache.cache-IO($identity);
+
+=end code
+
+Returns the C<IO::Path> object for the directory of the given identity
+in the cache.
+
+=head2 cache-identity
+
+=begin code :lang<raku>
+
+say $cache.cache-identity($identity);
+
+=end code
+
+Updates the given identity in the cache.  Returns either:
+=item C<True> if identity was not yet in the cache, and successfully fetched
+=item C<Nil> if identity was already in the cache
+=item C<Str> error message if fetching identity failed
 
 =head1 AUTHOR
 

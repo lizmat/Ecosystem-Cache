@@ -6,9 +6,8 @@
   "build-depends": [
   ],
   "depends": [
-    "Ecosystem:ver<0.0.29+>:auth<zef:lizmat>",
-    "Identity::Utils:ver<0.0.18+>:auth<zef:lizmat>",
-    "String::Utils:ver<0.0.32+>:auth<zef:lizmat>"
+    "Ecosystem:ver<0.0.31+>:auth<zef:lizmat>",
+    "Identity::Utils:ver<0.0.19+>:auth<zef:lizmat>"
   ],
   "description": "maintain a local cache of an ecosystem",
   "license": "Artistic-2.0",
