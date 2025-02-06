@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/lizmat/Ecosystem-Cache/actions/workflows/linux.yml/badge.svg)](https://github.com/lizmat/Ecosystem-Cache/actions) [![Actions Status](https://github.com/lizmat/Ecosystem-Cache/actions/workflows/macos.yml/badge.svg)](https://github.com/lizmat/Ecosystem-Cache/actions) [![Actions Status](https://github.com/lizmat/Ecosystem-Cache/actions/workflows/windows.yml/badge.svg)](https://github.com/lizmat/Ecosystem-Cache/actions)
+[![Actions Status](https://github.com/lizmat/Ecosystem-Cache/actions/workflows/linux.yml/badge.svg)](https://github.com/lizmat/Ecosystem-Cache/actions) [![Actions Status](https://github.com/lizmat/Ecosystem-Cache/actions/workflows/macos.yml/badge.svg)](https://github.com/lizmat/Ecosystem-Cache/actions)
 
 NAME
 ====
