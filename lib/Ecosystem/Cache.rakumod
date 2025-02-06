@@ -9,7 +9,7 @@ sub term:<nano>() is export { use nqp; nqp::time }
 my $default-cache := (%*ENV<RAKU_ECOSYSTEM_CACHE> andthen .IO)
   // ($*HOME // $*TMPDIR).add(".ecosystem").add("cache");
 
-class Ecosystem::Cache:ver<0.0.2>:auth<zef:lizmat> {
+class Ecosystem::Cache:ver<0.0.3>:auth<zef:lizmat> {
     has Ecosystem $.ecosystem is built(:bind) = Ecosystem.new;
     has IO::Path  $.cache     is built(:bind) = $default-cache;
     has @.identities          is built(False);
