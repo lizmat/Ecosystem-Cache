@@ -7,7 +7,8 @@
   ],
   "depends": [
     "Ecosystem:ver<0.0.31+>:auth<zef:lizmat>",
-    "Identity::Utils:ver<0.0.19+>:auth<zef:lizmat>"
+    "Identity::Utils:ver<0.0.19+>:auth<zef:lizmat>",
+    "paths:ver<10.1+>:auth<zef:lizmat>"
   ],
   "description": "maintain a local cache of an ecosystem",
   "license": "Artistic-2.0",

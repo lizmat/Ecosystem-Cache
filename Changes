@@ -5,6 +5,7 @@ Revision history for Ecosystem::Cache
       candidate without arguments
     - Change name of "cache-identity" method to "update-identity"
       as that more describes what it does
+    - Add dependency on "paths"
     - Added support for "provides", "tests", "scripts" and "code"
       methods, each providing an IO to a file containing absolute
       paths to be used by e.g. the --from-files option of "rak"
