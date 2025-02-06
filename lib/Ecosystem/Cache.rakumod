@@ -187,7 +187,7 @@ class Ecosystem::Cache:ver<0.0.2>:auth<zef:lizmat> {
         # Create list of scripts
         self.scripts.spurt(
           paths($root, :recurse, :dir(* eq "bin"), :!file).map({
-              dir($_)>>.absolute.Slip
+              dir($_).map({ .absolute if .f }).Slip
           }).sort.join("\n")
         );
 
