@@ -46,7 +46,7 @@ The `new` method instantiates the `Ecosystem::Cache` object, and optionally refr
 
 ### :ecosystem
 
-Optional. The [`Ecosystem`](https://raku.land/zef:lizmat/Ecosystem) object for which to set up / update a cache. Defaults to whatever ecosystem in instantiated with `Ecosystem.new`.
+Optional. The [`Ecosystem`](https://raku.land/zef:lizmat/Ecosystem) object for which to set up / update a cache. Defaults to whatever ecosystem in instantiated with `Ecosystem.new` (which is currently the `"rea"` ecosystem).
 
 After instantion, the `Ecosystem` object used can be obtained by the `ecosystem` method.
 
@@ -162,7 +162,7 @@ say $ec.code;             # IO of paths to files with Raku code
 .say for $ec.code.lines;  # list all provided files with Raku code
 ```
 
-Returns an `IO::Path` object for the file that contains all of the absolute paths of the files that contain Raku code (the summation of the files in `provides`, `tests` and `scripts`.
+Returns an `IO::Path` object for the file that contains all of the absolute paths of the files that contain Raku code (the summation of the files in `provides`, `tests` and `scripts`).
 
 update-identity
 ---------------

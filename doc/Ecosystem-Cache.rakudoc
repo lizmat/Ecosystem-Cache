@@ -54,7 +54,8 @@ named arguments:
 
 Optional.  The L<C<Ecosystem>|https://raku.land/zef:lizmat/Ecosystem>
 object for which to set up / update a cache.  Defaults to whatever
-ecosystem in instantiated with C<Ecosystem.new>.
+ecosystem in instantiated with C<Ecosystem.new> (which is currently
+the C<"rea"> ecosystem).
 
 After instantion, the C<Ecosystem> object used can be obtained by the
 C<ecosystem> method.
@@ -193,7 +194,7 @@ say $ec.code;             # IO of paths to files with Raku code
 
 Returns an C<IO::Path> object for the file that contains all of the
 absolute paths of the files that contain Raku code (the summation of
-the files in C<provides>, C<tests> and C<scripts>.
+the files in C<provides>, C<tests> and C<scripts>).
 
 =head2 update-identity
 
