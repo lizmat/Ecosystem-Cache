@@ -1,5 +1,6 @@
 use Ecosystem:ver<0.0.31+>:auth<zef:lizmat>;
 use Identity::Utils:ver<0.0.19+>:auth<zef:lizmat> <short-name>;
+use paths:ver<10.1+>:auth<zef:lizmat>;
 
 # Don't bother with 6.e
 sub term:<nano>() is export { use nqp; nqp::time }
@@ -53,17 +54,20 @@ class Ecosystem::Cache:ver<0.0.1>:auth<zef:lizmat> {
     }
 
     # Produce IO for the directory of a given identity in the cache
-    method cache-IO(Ecosystem::Cache:D: str $identity) {
+    multi method cache(Ecosystem::Cache:D: --> IO::Path:D) {
+        $!cache
+    }
+    multi method cache(Ecosystem::Cache:D: str $identity --> IO::Path:D) {
         $!cache
           .add(short-name($identity).substr(0,1).uc)
           .add($identity)
     }
 
     # Make sure the cache for the given identity is up to date
-    method cache-identity(Ecosystem::Cache:D: str $identity) {
+    method update-identity(Ecosystem::Cache:D: str $identity) {
 
         # Nothing to do for this identity
-        my $IO := self.cache-IO($identity);
+        my $IO := self.cache($identity);
         return Nil if $IO.e;
 
         # Make sure the letter dir exists
@@ -106,6 +110,22 @@ class Ecosystem::Cache:ver<0.0.1>:auth<zef:lizmat> {
         True
     }
 
+    method provides(Ecosystem::Cache:D: --> IO::Path:D) {
+        $!cache.add("provides")
+    }
+
+    method tests(Ecosystem::Cache:D: --> IO::Path:D) {
+        $!cache.add("tests")
+    }
+
+    method scripts(Ecosystem::Cache:D: --> IO::Path:D) {
+        $!cache.add("scripts")
+    }
+
+    method code(Ecosystem::Cache:D: --> IO::Path:D) {
+        $!cache.add("code")
+    }
+
     method update(Ecosystem::Cache:D:
       @added   is raw = [],
       @removed is raw = [],
@@ -113,27 +133,27 @@ class Ecosystem::Cache:ver<0.0.1>:auth<zef:lizmat> {
     --> Nil) {
 
         # Run update, remember id's seen, added and failed
-        my %seen;
+        my %seen is SetHash;
         for @!identities -> $id {
             my str $key = "$id.substr(0,1).uc()/$id";
-            if self.cache-identity($id) -> $message {
+            if self.update-identity($id) -> $message {
                 if $message ~~ Str {
                     %failed{$id} := $message;
                 }
                 else {
                     @added.push($id);
-                    %seen{$key} := True;
+                    %seen.set($key);
                 }
             }
             else {
-                %seen{$key} := True;
+                %seen.set($key);
             }
         }
 
         # Cleanup now superfluous distributions
         indir $!cache, {
-            for dir>>.relative.sort {
-                for (dir $_)>>.relative {
+            for dir.map({.relative if .d}).sort {
+                for dir($_).map(*.relative) {
                     unless %seen{$_} {
                         my $proc := run <rm -rf>, $_;
                         @removed.push($_) unless $proc.exitcode;
@@ -141,6 +161,40 @@ class Ecosystem::Cache:ver<0.0.1>:auth<zef:lizmat> {
                 }
             }
         }
+
+        my str @provides;
+        my str $root  = $!cache.absolute;
+        my %all-meta := $!ecosystem.identities;
+        for %seen.keys.sort -> $path {
+            my $id   := $path.substr(2);
+            my %meta := %all-meta{$id};
+            my str $base = $root ~ "/" ~ $path ~ "/";
+            @provides.append(
+              %meta<provides>.values.sort.map({ $base ~ $_ })
+            );
+        }
+
+        # Create list of files provided by distributions
+        self.provides.spurt(@provides.join("\n"));
+
+        # Create list of test files
+        self.tests.spurt(
+          paths($root, :recurse, :dir(* eq "t" | "xt"), :!file).map({
+              paths($_, :file(*.ends-with(".t" | ".rakutest" | ".t6"))).Slip
+          }).sort.join("\n")
+        );
+
+        # Create list of scripts
+        self.scripts.spurt(
+          paths($root, :recurse, :dir(* eq "bin"), :!file).map({
+              dir($_)>>.absolute.Slip
+          }).sort.join("\n")
+        );
+
+        # Create list of all files with Raku code
+        my @code;
+        @code.append(self."$_"().lines) for <provides tests scripts>;
+        self.code.spurt(@code.sort.join("\n"));
     }
 }
 

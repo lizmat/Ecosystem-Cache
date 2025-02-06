@@ -11,9 +11,9 @@ SYNOPSIS
 ```raku
 use Ecosystem::Cache;
 
-my $cache = Ecosystem::Cache.new;  # defaults to REA
+my $ec = Ecosystem::Cache.new;  # defaults to REA
 
-$cache.update;  # make sure all distributions are up-to-date
+$ec.update;  # make sure all distributions are up-to-date
 ```
 
 DESCRIPTION
@@ -21,7 +21,7 @@ DESCRIPTION
 
 The `Ecosystem::Cache` distribution provides the logic to maintain a local cache of the most recent distributions in a Raku ecosystem.
 
-It's use is mainly intended to serve as an area in which searches can be performed, such as with [`App::Rak`](https://raku.land/zef:lizmat/App::Rak).
+Its use is mainly intended to serve as an area in which searches can be performed, such as with [`App::Rak`](https://raku.land/zef:lizmat/App::Rak).
 
 SCRIPTS
 =======
@@ -39,7 +39,7 @@ new
 ```raku
 use Ecosystem::Cache;
 
-my $cache = Ecosystem::Cache.new(:update);  # defaults to REA
+my $ec = Ecosystem::Cache.new(:update);  # defaults to REA
 ```
 
 The `new` method instantiates the `Ecosystem::Cache` object, and optionally refreshes the information about the ecosystem (instead of using the information already cached by `zef`). It takes the following named arguments:
@@ -74,7 +74,7 @@ update
 ------
 
 ```raku
-$cache.update(my @new, my @gone, my %erred);
+$ec.update(my @new, my @gone, my %erred);
 say "Added @new.elems(), removed @gone.elems(), failed %erred.elems()";
 ```
 
@@ -95,7 +95,7 @@ name
 ----
 
 ```raku
-say $cache.name;
+say $ec.name;
 ```
 
 Returns the name of the ecosystem to which this cache applies.
@@ -104,25 +104,71 @@ archive-URL
 -----------
 
 ```raku
-say $cache.archive-URL($identity);
+say $ec.archive-URL($identity);
 ```
 
 Returns the URL for downloading the distribution of the given identity.
 
-cache-IO
+cache
+-----
+
+```raku
+say $ec.cache;             # root dir of cache info
+
+say $ec.cache($identity);  # dir of given identity
+```
+
+Returns the `IO::Path` object for the directory of the given identity in the cache, or the `IO::Path` object for the root directory of the cache if no identity was given.
+
+provides
 --------
 
 ```raku
-say $cache.cache-IO($identity);
+say $ec.provides;             # IO of paths to files that are provided
+
+.say for $ec.provides.lines;  # list all provided files
 ```
 
-Returns the `IO::Path` object for the directory of the given identity in the cache.
+Returns an `IO::Path` object for the file that contains all of the absolute paths of the files that occurred in the `"provides"` section of the META information of all the distributions.
 
-cache-identity
---------------
+tests
+-----
 
 ```raku
-say $cache.cache-identity($identity);
+say $ec.tests;             # IO of paths to test-files
+
+.say for $ec.tests.lines;  # list all provided test-files
+```
+
+Returns an `IO::Path` object for the file that contains all of the absolute paths of the test-files (as defined by either having the `".t"` or `".rakutest` extension, inside of a `"t"` or `"xt"` directory).
+
+scripts
+-------
+
+```raku
+say $ec.scripts;             # IO of paths to scripts
+
+.say for $ec.scripts.lines;  # list all provided scripts
+```
+
+Returns an `IO::Path` object for the file that contains all of the absolute paths of the scripts (files inside a `"bin"` directory).
+
+code
+----
+
+```raku
+say $ec.code;             # IO of paths to files with Raku code
+
+.say for $ec.code.lines;  # list all provided files with Raku code
+```
+
+Returns an `IO::Path` object for the file that contains all of the absolute paths of the files that contain Raku code (the summation of the files in `provides`, `tests` and `scripts`.
+
+update-identity
+---------------
+
+```raku
+say $ec.update-identity($identity);
 ```
 
 Updates the given identity in the cache. Returns either:

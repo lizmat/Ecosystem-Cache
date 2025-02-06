@@ -22,7 +22,7 @@ if (@added || @removed) && %failed {
     say "%failed.elems() failed:";
     for %errors {
         say " " ~ .key ~ ":";
-        say .indent(2) for .value<>;
+        say .indent(2) for .value<>.sort;
     }
 }
 

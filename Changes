@@ -1,6 +1,13 @@
 Revision history for Ecosystem::Cache
 
 {{$NEXT}}
+    - Change name of "cache-IO" method "cache", and add a
+      candidate without arguments
+    - Change name of "cache-identity" method to "update-identity"
+      as that more describes what it does
+    - Added support for "provides", "tests", "scripts" and "code"
+      methods, each providing an IO to a file containing absolute
+      paths to be used by e.g. the --from-files option of "rak"
 
 0.0.1  2025-02-05T22:31:57+01:00
     - Initial version

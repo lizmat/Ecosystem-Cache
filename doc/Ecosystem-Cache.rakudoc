@@ -10,9 +10,9 @@ Ecosystem::Cache - maintain a local cache of an ecosystem
 
 use Ecosystem::Cache;
 
-my $cache = Ecosystem::Cache.new;  # defaults to REA
+my $ec = Ecosystem::Cache.new;  # defaults to REA
 
-$cache.update;  # make sure all distributions are up-to-date
+$ec.update;  # make sure all distributions are up-to-date
 
 =end code
 
@@ -21,7 +21,7 @@ $cache.update;  # make sure all distributions are up-to-date
 The C<Ecosystem::Cache> distribution provides the logic to maintain
 a local cache of the most recent distributions in a Raku ecosystem.
 
-It's use is mainly intended to serve as an area in which searches
+Its use is mainly intended to serve as an area in which searches
 can be performed, such as with L<C<App::Rak>|https://raku.land/zef:lizmat/App::Rak>.
 
 =head1 SCRIPTS
@@ -41,7 +41,7 @@ and output any statistics when appropriate.
 
 use Ecosystem::Cache;
 
-my $cache = Ecosystem::Cache.new(:update);  # defaults to REA
+my $ec = Ecosystem::Cache.new(:update);  # defaults to REA
 
 =end code
 
@@ -86,7 +86,7 @@ the meta list cached by C<zef>).
 
 =begin code :lang<raku>
 
-$cache.update(my @new, my @gone, my %erred);
+$ec.update(my @new, my @gone, my %erred);
 say "Added @new.elems(), removed @gone.elems(), failed %erred.elems()";
 
 =end code
@@ -110,7 +110,7 @@ The C<update> method takes 3 optional positional arguments:
 
 =begin code :lang<raku>
 
-say $cache.name;
+say $ec.name;
 
 =end code
 
@@ -120,28 +120,86 @@ Returns the name of the ecosystem to which this cache applies.
 
 =begin code :lang<raku>
 
-say $cache.archive-URL($identity);
+say $ec.archive-URL($identity);
 
 =end code
 
 Returns the URL for downloading the distribution of the given identity.
 
-=head2 cache-IO
+=head2 cache
 
 =begin code :lang<raku>
 
-say $cache.cache-IO($identity);
+say $ec.cache;             # root dir of cache info
+
+say $ec.cache($identity);  # dir of given identity
 
 =end code
 
 Returns the C<IO::Path> object for the directory of the given identity
-in the cache.
+in the cache, or the C<IO::Path> object for the root directory of the
+cache if no identity was given.
 
-=head2 cache-identity
+=head2 provides
 
 =begin code :lang<raku>
 
-say $cache.cache-identity($identity);
+say $ec.provides;             # IO of paths to files that are provided
+
+.say for $ec.provides.lines;  # list all provided files
+
+=end code
+
+Returns an C<IO::Path> object for the file that contains all of the
+absolute paths of the files that occurred in the C<"provides"> section
+of the META information of all the distributions.
+
+=head2 tests
+
+=begin code :lang<raku>
+
+say $ec.tests;             # IO of paths to test-files
+
+.say for $ec.tests.lines;  # list all provided test-files
+
+=end code
+
+Returns an C<IO::Path> object for the file that contains all of the
+absolute paths of the test-files (as defined by either having the C<".t">
+or C<".rakutest> extension, inside of a C<"t"> or C<"xt"> directory).
+
+=head2 scripts
+
+=begin code :lang<raku>
+
+say $ec.scripts;             # IO of paths to scripts
+
+.say for $ec.scripts.lines;  # list all provided scripts
+
+=end code
+
+Returns an C<IO::Path> object for the file that contains all of the
+absolute paths of the scripts (files inside a C<"bin"> directory).
+
+=head2 code
+
+=begin code :lang<raku>
+
+say $ec.code;             # IO of paths to files with Raku code
+
+.say for $ec.code.lines;  # list all provided files with Raku code
+
+=end code
+
+Returns an C<IO::Path> object for the file that contains all of the
+absolute paths of the files that contain Raku code (the summation of
+the files in C<provides>, C<tests> and C<scripts>.
+
+=head2 update-identity
+
+=begin code :lang<raku>
+
+say $ec.update-identity($identity);
 
 =end code
 
