@@ -1,7 +1,7 @@
 use Ecosystem::Cache;
 
 my $ecosystem := Ecosystem.new(:ecosystem(@*ARGS.head // "rea"));
-my $cache     := Ecosystem::Cache.new(:$ecosystem);
+my $cache     := Ecosystem::Cache.new(:$ecosystem, :update);
 $cache.update(my @added, my @removed, my %failed);
 
 if @added {

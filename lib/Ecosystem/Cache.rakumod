@@ -110,20 +110,40 @@ class Ecosystem::Cache:ver<0.0.3>:auth<zef:lizmat> {
         True
     }
 
-    method provides(Ecosystem::Cache:D: --> IO::Path:D) {
-        $!cache.add("provides")
+    method doc(Ecosystem::Cache:D: --> IO::Path:D) {
+        $!cache.add("doc")
     }
 
-    method tests(Ecosystem::Cache:D: --> IO::Path:D) {
-        $!cache.add("tests")
+    method code(Ecosystem::Cache:D: --> IO::Path:D) {
+        $!cache.add("code")
+    }
+
+    method provides(Ecosystem::Cache:D: --> IO::Path:D) {
+        $!cache.add("provides")
     }
 
     method scripts(Ecosystem::Cache:D: --> IO::Path:D) {
         $!cache.add("scripts")
     }
 
-    method code(Ecosystem::Cache:D: --> IO::Path:D) {
-        $!cache.add("code")
+    method tests(Ecosystem::Cache:D: --> IO::Path:D) {
+        $!cache.add("tests")
+    }
+
+    # Try to find out source of documentation from dist.ini file
+    sub doc-from-dist($dist) {
+        if $dist.e {
+            if $dist.slurp.split("\n\n").first({
+                $_ if .starts-with("[ReadmeFromPod]")
+            }) -> $readme-from-pod {
+                for $readme-from-pod.lines.skip {
+                    return Nil if $_ eq "enabled = false";
+                    return $dist.sibling(.substr(11)).absolute
+                      if .starts-with("filename = ");
+                }
+            }
+        }
+        Nil
     }
 
     method update(Ecosystem::Cache:D:
@@ -131,6 +151,9 @@ class Ecosystem::Cache:ver<0.0.3>:auth<zef:lizmat> {
       @removed is raw = [],
       %failed  is raw = {},
     --> Nil) {
+
+        my str @provides;
+        my str @doc;
 
         # Run update, remember id's seen, added and failed
         my %seen is SetHash;
@@ -152,17 +175,31 @@ class Ecosystem::Cache:ver<0.0.3>:auth<zef:lizmat> {
 
         # Cleanup now superfluous distributions
         indir $!cache, {
-            for dir.map({.relative if .d}).sort {
-                for dir($_).map(*.relative) {
-                    unless %seen{$_} {
-                        my $proc := run <rm -rf>, $_;
-                        @removed.push($_) unless $proc.exitcode;
+            for dir.map({.relative if .d}).sort -> $letter {
+                for dir($letter) -> $identity {
+                    with $identity.map(*.relative) {
+                        unless %seen{$_} {
+                            my $proc := run <rm -rf>, $_;
+                            @removed.push($_) unless $proc.exitcode;
+                        }
+                    }
+
+                    if doc-from-dist($identity.add("dist.ini")) -> $doc {
+                        @doc.push($doc)
+                    }
+                    elsif paths($identity.absolute,
+                      :file(*.ends-with(".pod" | ".pod6" | ".rakudoc"))
+                    ) -> @pods {
+                        @doc.append(@pods);
+                    }
+                    elsif (my $readme := $identity.add("README.md")).e {
+                        @doc.push($readme.absolute);
                     }
                 }
             }
         }
+        self.doc.spurt(@doc.join("\n"));
 
-        my str @provides;
         my str $root  = $!cache.absolute;
         my %all-meta := $!ecosystem.identities;
         for %seen.keys.sort -> $path {

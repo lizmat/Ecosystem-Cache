@@ -164,6 +164,17 @@ say $ec.code;             # IO of paths to files with Raku code
 
 Returns an `IO::Path` object for the file that contains all of the absolute paths of the files that contain Raku code (the summation of the files in `provides`, `tests` and `scripts`).
 
+doc
+---
+
+```raku
+say $ec.doc;             # IO of paths to files with documentation
+
+.say for $ec.doc.lines;  # list all provided files with documentation
+```
+
+Returns an `IO::Path` object for the file that contains all of the absolute paths of the files that contain documentation.
+
 update-identity
 ---------------
 
