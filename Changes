@@ -1,6 +1,8 @@
 Revision history for Ecosystem::Cache
 
 {{$NEXT}}
+
+0.0.4  2025-02-08T19:23:09+01:00
     - Make update script always use the live version of the db
     - Add support for "doc" method, the IO to the file containing
       absolute paths of documentation
