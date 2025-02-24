@@ -2,6 +2,10 @@ Revision history for Ecosystem::Cache
 
 {{$NEXT}}
 
+0.0.5  2025-02-24T12:51:24+01:00
+    - Make sure cleanup is actually done, so that always only the
+      newest release is in the cache
+
 0.0.4  2025-02-08T19:23:09+01:00
     - Make update script always use the live version of the db
     - Add support for "doc" method, the IO to the file containing

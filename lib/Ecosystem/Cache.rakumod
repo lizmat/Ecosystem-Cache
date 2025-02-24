@@ -9,7 +9,7 @@ sub term:<nano>() is export { use nqp; nqp::time }
 my $default-cache := (%*ENV<RAKU_ECOSYSTEM_CACHE> andthen .IO)
   // ($*HOME // $*TMPDIR).add(".ecosystem").add("cache");
 
-class Ecosystem::Cache:ver<0.0.4>:auth<zef:lizmat> {
+class Ecosystem::Cache:ver<0.0.5>:auth<zef:lizmat> {
     has Ecosystem $.ecosystem is built(:bind) = Ecosystem.new;
     has IO::Path  $.cache     is built(:bind) = $default-cache;
     has @.identities          is built(False);
@@ -156,7 +156,7 @@ class Ecosystem::Cache:ver<0.0.4>:auth<zef:lizmat> {
         my str @doc;
 
         # Run update, remember id's seen, added and failed
-        my %seen is SetHash;
+        my %seen;
         for @!identities -> $id {
             my str $key = "$id.substr(0,1).uc()/$id";
             if self.update-identity($id) -> $message {
@@ -165,34 +165,34 @@ class Ecosystem::Cache:ver<0.0.4>:auth<zef:lizmat> {
                 }
                 else {
                     @added.push($id);
-                    %seen.set($key);
+                    %seen{$key} := True;
                 }
             }
             else {
-                %seen.set($key);
+                %seen{$key} := True;
             }
         }
 
         # Cleanup now superfluous distributions
         indir $!cache, {
             for dir.map({.relative if .d}).sort -> $letter {
-                for dir($letter) -> $identity {
-                    with $identity.map(*.relative) {
+                for dir($letter) -> $io {
+                    with $io.relative {
                         unless %seen{$_} {
                             my $proc := run <rm -rf>, $_;
                             @removed.push($_) unless $proc.exitcode;
                         }
                     }
 
-                    if doc-from-dist($identity.add("dist.ini")) -> $doc {
+                    if doc-from-dist($io.add("dist.ini")) -> $doc {
                         @doc.push($doc)
                     }
-                    elsif paths($identity.absolute,
+                    elsif paths($io.absolute,
                       :file(*.ends-with(".pod" | ".pod6" | ".rakudoc"))
                     ) -> @pods {
                         @doc.append(@pods);
                     }
-                    elsif (my $readme := $identity.add("README.md")).e {
+                    elsif (my $readme := $io.add("README.md")).e {
                         @doc.push($readme.absolute);
                     }
                 }
@@ -234,9 +234,5 @@ class Ecosystem::Cache:ver<0.0.4>:auth<zef:lizmat> {
         self.code.spurt(@code.sort.join("\n"));
     }
 }
-
-#my $cache := Ecosystem::Cache.new(:update);
-#$cache.update(my @added, my @removed, my %failed);
-#dd :@added, :@removed;
 
 # vim: expandtab shiftwidth=4
