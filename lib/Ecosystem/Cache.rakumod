@@ -180,7 +180,7 @@ class Ecosystem::Cache:ver<0.0.5>:auth<zef:lizmat> {
                     with $io.relative {
                         unless %seen{$_} {
                             my $proc := run <rm -rf>, $_;
-                            @removed.push($_) unless $proc.exitcode;
+                            @removed.push(.substr(2)) unless $proc.exitcode;
                         }
                     }
 
