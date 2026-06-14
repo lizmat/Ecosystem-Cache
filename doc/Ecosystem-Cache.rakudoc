@@ -7,13 +7,11 @@ Ecosystem::Cache - maintain a local cache of an ecosystem
 =head1 SYNOPSIS
 
 =begin code :lang<raku>
-
 use Ecosystem::Cache;
 
 my $ec = Ecosystem::Cache.new;  # defaults to REA
 
 $ec.update;  # make sure all distributions are up-to-date
-
 =end code
 
 =head1 DESCRIPTION
@@ -38,11 +36,9 @@ and output any statistics when appropriate.
 =head2 new
 
 =begin code :lang<raku>
-
 use Ecosystem::Cache;
 
 my $ec = Ecosystem::Cache.new(:update);  # defaults to REA
-
 =end code
 
 The C<new> method instantiates the C<Ecosystem::Cache> object, and
@@ -86,10 +82,8 @@ the meta list cached by C<zef>).
 =head2 update
 
 =begin code :lang<raku>
-
 $ec.update(my @new, my @gone, my %erred);
 say "Added @new.elems(), removed @gone.elems(), failed %erred.elems()";
-
 =end code
 
 The C<update> method updates the cache with the latest distributions
@@ -110,9 +104,7 @@ The C<update> method takes 3 optional positional arguments:
 =head2 name
 
 =begin code :lang<raku>
-
 say $ec.name;
-
 =end code
 
 Returns the name of the ecosystem to which this cache applies.
@@ -120,9 +112,7 @@ Returns the name of the ecosystem to which this cache applies.
 =head2 archive-URL
 
 =begin code :lang<raku>
-
 say $ec.archive-URL($identity);
-
 =end code
 
 Returns the URL for downloading the distribution of the given identity.
@@ -130,11 +120,9 @@ Returns the URL for downloading the distribution of the given identity.
 =head2 cache
 
 =begin code :lang<raku>
-
 say $ec.cache;             # root dir of cache info
 
 say $ec.cache($identity);  # dir of given identity
-
 =end code
 
 Returns the C<IO::Path> object for the directory of the given identity
@@ -144,11 +132,9 @@ cache if no identity was given.
 =head2 provides
 
 =begin code :lang<raku>
-
 say $ec.provides;             # IO of paths to files that are provided
 
 .say for $ec.provides.lines;  # list all provided files
-
 =end code
 
 Returns an C<IO::Path> object for the file that contains all of the
@@ -158,11 +144,9 @@ of the META information of all the distributions.
 =head2 tests
 
 =begin code :lang<raku>
-
 say $ec.tests;             # IO of paths to test-files
 
 .say for $ec.tests.lines;  # list all provided test-files
-
 =end code
 
 Returns an C<IO::Path> object for the file that contains all of the
@@ -172,11 +156,9 @@ or C<".rakutest> extension, inside of a C<"t"> or C<"xt"> directory).
 =head2 scripts
 
 =begin code :lang<raku>
-
 say $ec.scripts;             # IO of paths to scripts
 
 .say for $ec.scripts.lines;  # list all provided scripts
-
 =end code
 
 Returns an C<IO::Path> object for the file that contains all of the
@@ -185,11 +167,9 @@ absolute paths of the scripts (files inside a C<"bin"> directory).
 =head2 code
 
 =begin code :lang<raku>
-
 say $ec.code;             # IO of paths to files with Raku code
 
 .say for $ec.code.lines;  # list all provided files with Raku code
-
 =end code
 
 Returns an C<IO::Path> object for the file that contains all of the
@@ -199,11 +179,9 @@ the files in C<provides>, C<tests> and C<scripts>).
 =head2 doc
 
 =begin code :lang<raku>
-
 say $ec.doc;             # IO of paths to files with documentation
 
 .say for $ec.doc.lines;  # list all provided files with documentation
-
 =end code
 
 Returns an C<IO::Path> object for the file that contains all of the
@@ -212,9 +190,7 @@ absolute paths of the files that contain documentation.
 =head2 update-identity
 
 =begin code :lang<raku>
-
 say $ec.update-identity($identity);
-
 =end code
 
 Updates the given identity in the cache.  Returns either:
@@ -226,7 +202,7 @@ Updates the given identity in the cache.  Returns either:
 
 Elizabeth Mattijsen <liz@raku.rocks>
 
-Source can be located at: https://github.com/lizmat/Ecosystem-Cache .
+Source can be located at: https://codeberg.org/lizmat/Ecosystem-Cache .
 Comments and Pull Requests are welcome.
 
 If you like this module, or what I'm doing more generally, committing to a
@@ -235,7 +211,7 @@ deal to me!
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2025 Elizabeth Mattijsen
+Copyright 2025, 2026 Elizabeth Mattijsen
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

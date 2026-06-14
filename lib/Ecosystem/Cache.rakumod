@@ -1,6 +1,6 @@
-use Ecosystem:ver<0.0.31+>:auth<zef:lizmat>;
-use Identity::Utils:ver<0.0.19+>:auth<zef:lizmat> <short-name>;
-use paths:ver<10.1+>:auth<zef:lizmat>;
+use Ecosystem:ver<0.0.33+>:auth<zef:lizmat>;
+use Identity::Utils:ver<0.0.28+>:auth<zef:lizmat> <short-name>;
+use paths:ver<10.2+>:auth<zef:lizmat>;
 
 # Don't bother with 6.e
 sub term:<nano>() is export { use nqp; nqp::time }
