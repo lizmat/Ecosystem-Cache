@@ -1,7 +1,10 @@
 Revision history for Ecosystem::Cache
 
 {{$NEXT}}
+
+0.0.6  2026-06-14T20:07:46+02:00
     - Move repo to Codeberg
+    - Modernize META
     - Up dependencies
     - Update copyright year
 
